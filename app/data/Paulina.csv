@@ -1,0 +1,5 @@
+connection_id,obj_name,direction,activity_type,rel_type,country,gender,comment
+1,stuff,to,presenting,family,uk,female/male,"We didn't have anything [as kids]. We couldn't afford anything. So now that we can, I find it difficult to find a balance."
+2,stuff,from,giving,family,pl,female,"My sister has a friend who has a baby boy in Poland and in Poland it’s not so easy so we try to send things to her when there’s something left."
+2,stuff,from,giving,friend,pl,female,"My sister has a friend who has a baby boy in Poland and in Poland it's not so easy so we try to send things to her when there's something left."
+3,diapers,from,keeping and bringing,,pl,,"Diapers here are cheap. Very, very, cheap. It's ridiculous how expensive diapers are in Poland."
