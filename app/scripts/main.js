@@ -3,24 +3,37 @@
   TO DO
 	- optimisations
 		- tooltips
-		- offscreen/one time rendering
+		- one time rendering
 		- css backgrounds (radial gradient)
-		- Maths floor to avoid subpixel rendering
-	- border on poland flag icon
+		- Maths floor to avoid subpixel rendering (check if required, might be unneccesary)
+	- dark grey thin border on poland flag icon
+	- allow comparison of two graphs? have a double iframe??
   
 
 
   NICE TO HAVE
-  - handle edge cases (loops, dotted lines, multiple levels) ??
-  - Ania (keeping and bringing, no partner)
-  - Kinga (keeping and bringing, no partner)
-  - allow comparisons ??
+  - handle edge cases (loops, dotted lines, multiple levels)
+	  
+	  DOTTED ( add a field to the table )
+	  - Kinga ID 3
+	  - Marlena ID 1 
+	  - Ania ID 4
 
+	  LOOPS ( ?? spend a couple of hours on it, see what happens )
+	  - Ania ID 1
+	  - Kinga ID 3 (maybe others)
+	  - Kaja ID 3
+
+	  MULTIPLE LEVELS ( I think this will just be too hard )
+	  - Paulina ID 2
+	  - Monika
 
 
 */
 
-/*var motherNames = [
+
+/* Test data to avoid cross origin problems */
+var motherNames = [
 		{
 			mothers_name : 'Agnieszka',
 			csv_file : "data/Agnieszka.csv"
@@ -54,34 +67,36 @@
 			csv_file : "data/Ania.csv"
 		}
 	];
-*/
-var gridAllocation = [0,4,6,2,3,7,5,1],
-	imagesLoaded = false,
-	backgroundImages = [],
-	commentActive = false,
-	debugMouse = false;
 
-var motherNames,
-	activeMother,
-	motherName,
-	table,
-	data,
-	w,
-	h,
-	comment,
-	bodyFont,
-	headingFont,
+var gridAllocation = [0,4,6,2,3,7,5,1], // which "arm" of the graph should be used
+	imagesLoaded = false, // reset each time data set changes
+	backgroundImages = [], // white underlays for semi transparent people icons
+	commentActive = false, // is the mouse in a tooltip zone
+	debugMouse = false; // renders tooltip zones if true
+
+var /*motherNames, */
+	activeMother, // index of current mother
+	motherName, // name of current mother
+	table, // csv of current mother
+	data, // structured data for current mother
+	w, //available width in page
+	h, // height
+	comment, // current tooltip text
+	bodyFont, // fonts
+	headingFont, //fonts
 	closeIcon,
-	mothersList;
+	mothersList; // html for showing mother names as clickable options
 
 function preload() {
-	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
+//	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
 		activeMother = -1;
-	});	
+//	});	
 	
+	// Check available width, minimum 600
 	w = $('#data-vis').width() > 600 ? $('#data-vis').width() : 600;
 	h = w * .66;
 
+	// preload underlay images and fonts
 	backgroundImages.female = loadImage('images/female-background.png');
 	backgroundImages.male = loadImage('images/male-background.png');
 	backgroundImages.femalemale = loadImage('images/female-male-background.png');
@@ -95,6 +110,8 @@ function preload() {
 
 
 function setup() {
+
+	// create html for tiled list of mothers' names
 	mothersList = $('<div id="mothers-list"></div>');
 	_.each(motherNames,function(element,index,list) {
 		mothersList.append('<a data-value="' + index + '"><h3>' + element.mothers_name + '</h3></a>');
@@ -102,6 +119,7 @@ function setup() {
 
 	$('.form-controls').append(mothersList);
 
+	// set up click listener to initialise data
 	mothersList.on('click', 'a', function() {
 		imagesLoaded = false;
 		activeMother = $(this).data('value');
@@ -113,20 +131,21 @@ function setup() {
 		resizeCanvas(w,h);
 	});
 
+	// create the canvas and append to the #data-vis div
 	var cnv = createCanvas(0, 0);
 	cnv.parent("data-vis");
 	
-//	setupData();
 }
 
 function draw() {
-	background(255);
 
+	// do nothing if no mother is selected
 	if (activeMother == -1) {
 		return;
 	}
 
-
+	/* TODO */
+	// background gradient (replace this section with a CSS gradient background underlay)
 	var radius = width * .66;
 	var gr = 235,gg = 225,gb = 204;
 	background(gr, gg, gb);
@@ -141,14 +160,16 @@ function draw() {
 		gb = gb + 0.15;
 	}
 
-	
+	// end background gradiet
 
+	// check images are loaded, if not do nothing
 	if (!imagesLoaded) {
 		imagesLoaded = checkImages();
 		return;
 	} 
 
-
+	/* TODO */
+	// Code to actually render the graph. Move all of this to a separate function that runs only once and is called from the click function
 	var x1 = 0,
 		x2 = 0,
 		y1 = height/10,
@@ -278,8 +299,11 @@ function draw() {
 
 	pop();
 
+	// end draw graph function
+
+	/* TODO */
+	// render tooltip (remove this and replace with bootstrap tooltip inside mousemoved function)
 	if (commentActive) {
-	
 		fill(255);
 		stroke(0);
 		strokeWeight(1);
@@ -293,7 +317,7 @@ function draw() {
 		text(comment,mouseX + 30, mouseY + 30, 340, 500);
 	}
 
-	// show mouse sensitive areas
+	// show mouse sensitive areas (for debug)
 	if (debugMouse) {
 		_.each(data, function(element, index, list) {
 	  		_.each(element, function(innerElement, innerIndex, innerList) {
@@ -312,6 +336,7 @@ function draw() {
 
 }
 
+// check on mouse move if we are inside a tooltip area
 function mouseMoved() {
 	var tempComment = false;
   	_.each(data, function(element, index, list) {
@@ -321,6 +346,8 @@ function mouseMoved() {
 	  				tempComment = true;
 	  				comment = null;
 	  				comment = innerElement.comment;
+	  				/* TODO */
+	  				// add bootstrap tooltip here
 	  			}
 	  		}
 
@@ -330,7 +357,7 @@ function mouseMoved() {
 	return false;
 }
 
-
+// if we click on the close button, go back to the list of names
 function mouseClicked() {
 	if (mouseX > width - 50 && mouseX < width - 20 && mouseY > 20 && mouseY < 50) {
 		activeMother = -1;
@@ -339,6 +366,7 @@ function mouseClicked() {
 	}
 }
 
+// set colours for activities
 function activityColors(activityType) {
 	if (activityType == "presenting") { //green
 		return color(1, 149, 63);
@@ -354,6 +382,8 @@ function activityColors(activityType) {
 	return color(0);
 }
 
+
+// read data in from table and make it into a usable structure
 function setupData() {
 	data = null;
 	data = [];
@@ -408,6 +438,8 @@ function setupData() {
 	}
 }
 
+
+// check if images are loaded
 function checkImages() {
 
 	var testImages = _.find(data, function(element) {
