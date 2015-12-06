@@ -50,6 +50,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 	}
 }
 
+#data-vis {
+	background: #ffffff;
+	background: -moz-radial-gradient(center, ellipse cover, #ffffff 77%, #ebe1cc 100%);
+	background: -webkit-radial-gradient(center, ellipse cover, #ffffff 77%,#ebe1cc 100%);
+	background: radial-gradient(ellipse at center, #ffffff 77%,#ebe1cc 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ebe1cc',GradientType=1 );
+}
+
 
 
 /* Responsive: Portrait tablets and up */

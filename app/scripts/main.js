@@ -3,20 +3,20 @@
   TO DO
 	- optimisations
 		- tooltips
-		- one time rendering
-		- css backgrounds (radial gradient)
+		- one time rendering <- done
+		- css backgrounds (radial gradient) <-done
 		- Maths floor to avoid subpixel rendering (check if required, might be unneccesary)
 	- dark grey thin border on poland flag icon
 	- allow comparison of two graphs? have a double iframe??
-  
+
 
 
   NICE TO HAVE
   - handle edge cases (loops, dotted lines, multiple levels)
-	  
+
 	  DOTTED ( add a field to the table )
 	  - Kinga ID 3
-	  - Marlena ID 1 
+	  - Marlena ID 1
 	  - Ania ID 4
 
 	  LOOPS ( ?? spend a couple of hours on it, see what happens )
@@ -90,8 +90,8 @@ var /*motherNames, */
 function preload() {
 //	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
 		activeMother = -1;
-//	});	
-	
+//	});
+
 	// Check available width, minimum 600
 	w = $('#data-vis').width() > 600 ? $('#data-vis').width() : 600;
 	h = w * .66;
@@ -126,6 +126,9 @@ function setup() {
 		motherName = motherNames[activeMother].mothers_name,
 		table = loadTable(motherNames[activeMother].csv_file, "csv", "header",function() {
 			setupData();
+			//cal draw function and do a settimeout with checking if images are loaded
+			setTimeout(delayDraw,1000);
+
 		});
 		mothersList.slideUp();
 		resizeCanvas(w,h);
@@ -134,42 +137,24 @@ function setup() {
 	// create the canvas and append to the #data-vis div
 	var cnv = createCanvas(0, 0);
 	cnv.parent("data-vis");
-	
+
 }
 
-function draw() {
+function delayDraw() {
+	if (checkImages()) {
+		draw2();
+	} else {
+		setTimeout(delayDraw, 200);
+	}
+}
+
+function draw2() {
 
 	// do nothing if no mother is selected
 	if (activeMother == -1) {
 		return;
 	}
 
-	/* TODO */
-	// background gradient (replace this section with a CSS gradient background underlay)
-	var radius = width * .66;
-	var gr = 235,gg = 225,gb = 204;
-	background(gr, gg, gb);
-	ellipseMode(RADIUS);
-	noStroke();
-	
-	for (var r = radius; r > 0; --r) {
-		fill(gr, gg, gb);
-		ellipse(width/2, height/2, r, r);
-		gr = gr + 0.15;
-		gg = gg + 0.15;
-		gb = gb + 0.15;
-	}
-
-	// end background gradiet
-
-	// check images are loaded, if not do nothing
-	if (!imagesLoaded) {
-		imagesLoaded = checkImages();
-		return;
-	} 
-
-	/* TODO */
-	// Code to actually render the graph. Move all of this to a separate function that runs only once and is called from the click function
 	var x1 = 0,
 		x2 = 0,
 		y1 = height/10,
@@ -214,12 +199,12 @@ function draw() {
 
 					pop();
 				});
-			
+
 			pop();
 
 			// add images
 			_.each(element, function(innerElement, innerIndex, innerList) {
-				
+
 				// add person image
 				var theta = (gridAllocation[index] + 2) / 8 * TWO_PI;
 				var hyp = y2 - displacement/6;
@@ -230,19 +215,19 @@ function draw() {
 				var yDisplace = baseDisplace * xTrans/hyp + innerIndex * displacement* xTrans/hyp;
 
 				if (!innerElement.boundSet) {
-					
+
 					if (xTrans <= 0.5) {
 						innerElement.x1 = (xTrans - xTrans/hyp * -169/isf - (169/isf)/2) + xDisplace + width/2;
 					} else {
-						innerElement.x1 = (Math.cos(theta) * hypShort - Math.cos(theta) * hypShort/hypShort * -169/isf ) * 0.5 + xDisplace + width/2;	
+						innerElement.x1 = (Math.cos(theta) * hypShort - Math.cos(theta) * hypShort/hypShort * -169/isf ) * 0.5 + xDisplace + width/2;
 					}
 					if (xTrans <= -0.5) {
 						innerElement.x2 = (Math.cos(theta) * hypShort - Math.cos(theta) * hypShort/hypShort * -169/isf ) * 0.5 + xDisplace + width/2;
 					} else {
 						innerElement.x2 = (xTrans - xTrans/hyp * -169/isf - (169/isf)/2) + xDisplace + width/2 + 169/isf;
 					}
-					 
-					
+
+
 					if (yTrans <= 0.5) {
 						innerElement.y1 = (yTrans - yTrans/hyp * -175/isf - 175/isf * .5) + yDisplace + height/2;
 					} else {
@@ -253,23 +238,23 @@ function draw() {
 					} else {
 						innerElement.y2 = (yTrans - yTrans/hyp * -175/isf - 175/isf * .5) + yDisplace + height/2 + 175/isf;
 					}
-					
+
 					innerElement.boundSet = true;
 				}
-					
+
 				push();
 					translate(xTrans - xTrans/hyp * -169/isf - (169/isf)/2, yTrans - yTrans/hyp * -175/isf - 175/isf * .5);
 					translate(xDisplace, yDisplace);
 					if (innerElement.countryImage) image(innerElement.countryImage, 0, 0, 169/isf, 175/isf);
-					
+
 					if (innerElement.personImage) {
 						if (!innerElement.backgroundImage === false)
 							image(backgroundImages[innerElement.backgroundImage], 0, 0, 169/isf, 175/isf);
 						tint(255,innerElement.transparency);
 						image(innerElement.personImage, 0, 0, 169/isf, 175/isf);
 						tint(255,255);
-					} 
-					
+					}
+
 				pop();
 				// add object image
 				hyp = y2 * .4;
@@ -325,12 +310,22 @@ function draw() {
 	  				fill(0,0,0,125);
 	  				tint(255,255);
 	  				rect( innerElement.x1, innerElement.y1, innerElement.x2 - innerElement.x1,  innerElement.y2 - innerElement.y1);
+	  				
+	  				//building div's with bootstrap-attributes for tooltips in the sensitive area (fails with: ReferenceError: createDiv is not defined)
+	  				/*var myDiv = createDiv("");
+	  				myDiv.attribute("title", comment);
+	  				myDiv.attribute("data-toggle", "tooltip");
+	  				myDiv.position(innerElement.x1, innerElement.y1);
+	  				myDiv.size(innerElement.x2 - innerElement.x1, innerElement.y2 - innerElement.y1);*/
+	  				
+	  				//var $div = $("<div>", {data-toggle: "tooltip", title: comment});
+	  				//$('.data-vis').append(div);
 		  		}
 
 		  	});
 		});
 	}
-	
+
 	// draw close button
 	image(closeIcon, width - 50 , 20, 30, 30);
 
@@ -348,13 +343,35 @@ function mouseMoved() {
 	  				comment = innerElement.comment;
 	  				/* TODO */
 	  				// add bootstrap tooltip here
+	  				
+	  				//var myDiv = createDiv("");
+	  				//myDiv.attribute("title", comment);
+	  				showComment();
+	  				
 	  			}
 	  		}
-
+	  		
 	  	});
 	});
 	commentActive = tempComment;
 	return false;
+}
+
+
+function showComment() {	
+	if (commentActive) {
+		fill(255);
+		stroke(0);
+		strokeWeight(1);
+		textAlign(LEFT);
+		textFont(bodyFont);
+		textSize(16);
+		var commentWidth = textWidth(comment);
+		rect(mouseX + 20, mouseY + 20, 360, Math.ceil(commentWidth/340) * 24 + 20);
+		fill(69);
+		strokeWeight(0);
+		text(comment,mouseX + 30, mouseY + 30, 340, 500);
+	}
 }
 
 // if we click on the close button, go back to the list of names
@@ -388,7 +405,7 @@ function setupData() {
 	data = null;
 	data = [];
 	var active_cid = -1;
-	for (var i = 0; i < table.getRowCount(); i++) { 
+	for (var i = 0; i < table.getRowCount(); i++) {
 		var cid = table.get(i, 'connection_id') - 1;
 		if ( active_cid != cid ) {
 			active_cid = cid;
@@ -401,7 +418,7 @@ function setupData() {
 		} else {
 			personImageString = table.get(i, 'gender') == 'female/male' ? 'female-male' : table.get(i, 'gender');
 			backgroundImage = personImageString.split('-').join('');
-		}		
+		}
 
 		var objImageString = table.get(i, 'obj_name').split(' ').join('-');
 
@@ -413,7 +430,7 @@ function setupData() {
 		} else if (table.get(i, 'rel_type').indexOf('playgroup') > -1) {
 			transparency = 255 * .25;
 		}
-		
+
 		data[cid].push({
 			id : cid,
 			objName : table.get(i, 'obj_name'),
@@ -451,6 +468,4 @@ function checkImages() {
 	});
 
 	return !testImages;
-
 }
-
