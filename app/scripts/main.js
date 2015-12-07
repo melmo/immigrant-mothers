@@ -119,8 +119,8 @@ function setup() {
 		motherName = motherNames[activeMother].mothers_name,
 		table = loadTable(motherNames[activeMother].csv_file, "csv", "header",function() {
 			setupData();
-			//cal draw function and do a settimeout with checking if images are loaded
-			setTimeout(delayDraw,1000);
+			//call draw function with checking if images are loaded
+			delayDraw();
 
 		});
 		mothersList.slideUp();
@@ -436,11 +436,14 @@ function checkImages() {
 
 	var testImages = _.find(data, function(element) {
 		var test = _.find(element, function(innerElement) {
-			return innerElement.personImage.width < 1 && innerElement.countryImage.width < 1 && innerElement.objectImage.width < 1; // return true if image not loaded
+			console.log(innerElement.personImage.width);
+			console.log(innerElement.countryImage.width);
+			console.log(innerElement.objectImage.width);
+			return innerElement.personImage.width < 2 || innerElement.countryImage.width < 2 || innerElement.objectImage.width < 2; // return true if image not loaded
 		});
 
-		return test;
+		return test !== undefined; // true if unloaded images found
 	});
 
-	return !testImages;
+	return testImages === undefined; // true if no unloaded images found
 }
