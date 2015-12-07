@@ -1,17 +1,9 @@
 /*
 
-  TO DO
-	- optimisations
-		- tooltips
-		- one time rendering <- done
-		- css backgrounds (radial gradient) <-done
-		- Maths floor to avoid subpixel rendering (check if required, might be unneccesary)
-	- dark grey thin border on poland flag icon
-	- allow comparison of two graphs? have a double iframe??
-
-
-
   NICE TO HAVE
+
+  - allow comparison of two graphs? have a double iframe
+
   - handle edge cases (loops, dotted lines, multiple levels)
 
 	  DOTTED ( add a field to the table )
@@ -85,7 +77,8 @@ var /*motherNames, */
 	bodyFont, // fonts
 	headingFont, //fonts
 	closeIcon,
-	mothersList; // html for showing mother names as clickable options
+	mothersList, // html for showing mother names as clickable options
+	tooltip; 
 
 function preload() {
 //	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
@@ -138,6 +131,16 @@ function setup() {
 	var cnv = createCanvas(0, 0);
 	cnv.parent("data-vis");
 
+	tooltip = $('<div id="tooltip-comment"></div>');
+	$('#data-vis').append(tooltip);
+	tooltip.popover({
+		content : function() {
+			return comment;
+		},
+		trigger : 'manual',
+		animation : false
+	});
+
 }
 
 function delayDraw() {
@@ -163,7 +166,7 @@ function draw2() {
 		displacement = 175/isf; // image scale factor
 
 	push();
-		translate(width/2, height/2);
+		translate(Math.floor(width/2), Math.floor(height/2));
 
 		_.each(data, function(element, index, list) {
 			push();
@@ -173,7 +176,7 @@ function draw2() {
 				// draw line
 				_.each(element, function(innerElement, innerIndex, innerList) {
 					push();
-						translate(baseDisplace + innerIndex * displacement , 0);
+						translate(Math.floor(baseDisplace + innerIndex * displacement) , 0);
 						stroke(activityColors(innerElement.activityType));
 						strokeWeight(2);
 						line(x1, y1, x2, y2);
@@ -190,7 +193,7 @@ function draw2() {
 								var arrY1 = y1;
 								var arrY2 = y2;
 							}
-							translate(arrX2, arrY2);
+							translate(Math.floor(arrX2), Math.floor(arrY2));
 							var a = atan2(arrX1-arrX2, arrY2-arrY1);
 							rotate(a);
 							line(0, 0, -10, -10);
@@ -243,15 +246,15 @@ function draw2() {
 				}
 
 				push();
-					translate(xTrans - xTrans/hyp * -169/isf - (169/isf)/2, yTrans - yTrans/hyp * -175/isf - 175/isf * .5);
-					translate(xDisplace, yDisplace);
-					if (innerElement.countryImage) image(innerElement.countryImage, 0, 0, 169/isf, 175/isf);
+					translate(Math.floor(xTrans - xTrans/hyp * -169/isf - (169/isf)/2), Math.floor(yTrans - yTrans/hyp * -175/isf - 175/isf * .5));
+					translate(Math.floor(xDisplace), Math.floor(yDisplace));
+					if (innerElement.countryImage) image(innerElement.countryImage, 0, 0, Math.floor(169/isf), Math.floor(175/isf));
 
 					if (innerElement.personImage) {
 						if (!innerElement.backgroundImage === false)
-							image(backgroundImages[innerElement.backgroundImage], 0, 0, 169/isf, 175/isf);
+							image(backgroundImages[innerElement.backgroundImage], 0, 0, Math.floor(169/isf),Math.floor(175/isf) );
 						tint(255,innerElement.transparency);
-						image(innerElement.personImage, 0, 0, 169/isf, 175/isf);
+						image(innerElement.personImage, 0, 0, Math.floor(169/isf), Math.floor(175/isf));
 						tint(255,255);
 					}
 
@@ -261,9 +264,9 @@ function draw2() {
 				xTrans = Math.cos(theta) * hyp;
 				yTrans = Math.sin(theta) * hyp;
 				push();
-					translate(xTrans - xTrans/hyp * -169/isf - (169/isf)/2, yTrans - yTrans/hyp * -175/isf - 175/isf * .5);
-					translate(xDisplace, yDisplace);
-					if (innerElement.objectImage) image(innerElement.objectImage, 0, 0, 169/isf, 175/isf);
+					translate(Math.floor(xTrans - xTrans/hyp * -169/isf - (169/isf)/2), Math.floor(yTrans - yTrans/hyp * -175/isf - 175/isf * .5));
+					translate(Math.floor(xDisplace), Math.floor(yDisplace));
+					if (innerElement.objectImage) image(innerElement.objectImage, 0, 0, Math.floor(169/isf), Math.floor(175/isf));
 				pop();
 			});
 		});
@@ -286,21 +289,6 @@ function draw2() {
 
 	// end draw graph function
 
-	/* TODO */
-	// render tooltip (remove this and replace with bootstrap tooltip inside mousemoved function)
-	if (commentActive) {
-		fill(255);
-		stroke(0);
-		strokeWeight(1);
-		textAlign(LEFT);
-		textFont(bodyFont);
-		textSize(16);
-		var commentWidth = textWidth(comment);
-		rect(mouseX + 20, mouseY + 20, 360, Math.ceil(commentWidth/340) * 24 + 20);
-		fill(69);
-		strokeWeight(0);
-		text(comment,mouseX + 30, mouseY + 30, 340, 500);
-	}
 
 	// show mouse sensitive areas (for debug)
 	if (debugMouse) {
@@ -311,15 +299,7 @@ function draw2() {
 	  				tint(255,255);
 	  				rect( innerElement.x1, innerElement.y1, innerElement.x2 - innerElement.x1,  innerElement.y2 - innerElement.y1);
 	  				
-	  				//building div's with bootstrap-attributes for tooltips in the sensitive area (fails with: ReferenceError: createDiv is not defined)
-	  				/*var myDiv = createDiv("");
-	  				myDiv.attribute("title", comment);
-	  				myDiv.attribute("data-toggle", "tooltip");
-	  				myDiv.position(innerElement.x1, innerElement.y1);
-	  				myDiv.size(innerElement.x2 - innerElement.x1, innerElement.y2 - innerElement.y1);*/
 	  				
-	  				//var $div = $("<div>", {data-toggle: "tooltip", title: comment});
-	  				//$('.data-vis').append(div);
 		  		}
 
 		  	});
@@ -331,8 +311,12 @@ function draw2() {
 
 }
 
+
 // check on mouse move if we are inside a tooltip area
 function mouseMoved() {
+	
+	if (activeMother < 0) return;
+
 	var tempComment = false;
   	_.each(data, function(element, index, list) {
 	  	_.each(element, function(innerElement, innerIndex, innerList) {
@@ -341,42 +325,33 @@ function mouseMoved() {
 	  				tempComment = true;
 	  				comment = null;
 	  				comment = innerElement.comment;
-	  				/* TODO */
-	  				// add bootstrap tooltip here
+	  				tooltip.css({
+						position : 'absolute',
+						left : (mouseX + 20) + 'px',
+						top : mouseY + 'px'
+
+					});
 	  				
-	  				//var myDiv = createDiv("");
-	  				//myDiv.attribute("title", comment);
-	  				showComment();
-	  				
-	  			}
+	  			} 
 	  		}
 	  		
 	  	});
 	});
+	if (tempComment) {
+		
+		tooltip.popover('show');
+	} else if (commentActive && !tempComment) {
+		tooltip.popover('hide');
+	}
 	commentActive = tempComment;
 	return false;
 }
 
 
-function showComment() {	
-	if (commentActive) {
-		fill(255);
-		stroke(0);
-		strokeWeight(1);
-		textAlign(LEFT);
-		textFont(bodyFont);
-		textSize(16);
-		var commentWidth = textWidth(comment);
-		rect(mouseX + 20, mouseY + 20, 360, Math.ceil(commentWidth/340) * 24 + 20);
-		fill(69);
-		strokeWeight(0);
-		text(comment,mouseX + 30, mouseY + 30, 340, 500);
-	}
-}
-
 // if we click on the close button, go back to the list of names
 function mouseClicked() {
 	if (mouseX > width - 50 && mouseX < width - 20 && mouseY > 20 && mouseY < 50) {
+		tooltip.popover('hide');
 		activeMother = -1;
 		resizeCanvas(0,0);
 		mothersList.slideDown();
