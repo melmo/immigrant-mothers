@@ -25,6 +25,7 @@
 
 
 /* Test data to avoid cross origin problems */
+/*
 var motherNames = [
 		{
 			mothers_name : 'Agnieszka',
@@ -58,7 +59,7 @@ var motherNames = [
 			mothers_name : 'Ania',
 			csv_file : "data/Ania.csv"
 		}
-	];
+	];*/
 
 var gridAllocation = [0,4,6,2,3,7,5,1], // which "arm" of the graph should be used
 	imagesLoaded = false, // reset each time data set changes
@@ -81,9 +82,9 @@ var /*motherNames, */
 	tooltip; 
 
 function preload() {
-//	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
+	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
 		activeMother = -1;
-//	});
+	});
 
 	// Check available width, minimum 600
 	w = $('#data-vis').width() > 600 ? $('#data-vis').width() : 600;
