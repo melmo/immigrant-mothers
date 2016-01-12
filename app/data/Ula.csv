@@ -1,5 +1,6 @@
-connection_id,obj_name,direction,activity_type,rel_type,country,gender,comment
-1,stroller,to,borrowing and lending,playgroup friend,uk,female,"Because it was a very expensive stroller, we borrowed it from that British friend and gave it back to her and then she sold it and still got plenty of money for it!"
-2,baby clothes,to,buying and selling,friends,uk,female,"I would give them some money, really, just symbolically."
-2,baby clothes,from,giving,friends,uk,female,"I gave her many things after my first son and now she gives clothes for my younger one. … When Max was 3, we gave everything away because we had no room for it. And some of these things have come back to us, the things that are still in a good condition."
-2,baby clothes,to,giving,friends,uk,female,I rely on recycling – that means I have friends who have older boys and I get clothes from them. 
+connection_id,obj_name,direction,activity_type,rel_type,country,gender,comment,dotted,shopping
+1,stroller,to,borrowing and lending,playgroup friend,uk,female,"Because it was a very expensive stroller, we borrowed it from that British friend and gave it back to her and then she sold it and still got plenty of money for it! ",,
+2,baby clothes,to,buying and selling,friends,uk,female,"I would give them some money, really, just symbolically. ",,
+3,baby clothes,from,giving,friends,uk,female,"I gave her many things after my first son and now she gives clothes for my younger one. … When Max was 3, we gave everything away because we had no room for it. And some of these things have come back to us, the things that are still in a good condition.  ",,
+3,baby clothes,to,giving,friends,uk,female,I rely on recycling – that means I have friends who have older boys and I get clothes from them. ,,
+4,stroller,to,buying and selling,commercial ebay,,,,,
