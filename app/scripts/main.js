@@ -485,7 +485,7 @@ function setupData() {
 			gender : table.get(i, 'gender'),
 			comment : table.get(i, 'comment'),
 			dotted : table.get(i, 'dotted'),
-			shopping : table.get(i, 'shopping'),
+			shopping : table.get(0, 'shopping'),
 			personImage : personImageString == '' ? false : loadImage('images/' + personImageString + '.png'),
 			countryImage : table.get(i, 'country') == '' ? false : loadImage('images/' + table.get(i, 'country') + '.png'),
 			objectImage : objImageString == '' ? false : loadImage('images/obj-' + objImageString + '.png'),
