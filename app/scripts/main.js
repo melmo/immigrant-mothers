@@ -21,6 +21,25 @@
 	  - Monika
 
 
+  Requests from Agata:
+
+
+Is there any way the visualisations could appear on a carousel, just as
+the drawings?  It really would be much more
+user friendly if we could skip from one viz to another without having to
+go back to the main page. 
+
+Also, if we could have the corners of the viz
+transparent, without the shading, it would look better, we think. 
+
+And, in
+a perfect world, if instead of boxes with names we could have pictures of
+visualisations (which we could provide by creating screen shots, I think,
+once all the visualisations are in order -- see, e.g., above re changes in
+the Agnieszka file)
+
+
+
 */
 
 
@@ -93,7 +112,7 @@ var gridAllocation = [0,4,6,2,3,7,5,1], // which "arm" of the graph should be us
 
 var headingWidth;
 
-var /*motherNames, */
+var motherNames, 
 	activeMother, // index of current mother
 	motherName, // name of current mother
 	tSize, // size of the Mothers font
@@ -106,6 +125,8 @@ var /*motherNames, */
 	bodyFont, // fonts
 	headingFont, //fonts
 	closeIcon,
+	nextIcon,
+	prevIcon,
 	mothersList, // html for showing mother names as clickable options
 	tooltip,
 	tooltip2;
@@ -126,6 +147,8 @@ function preload() {
 	backgroundImages.femalemale = loadImage('images/female-male-background.png');
 
 	closeIcon = loadImage('images/close.png');
+	nextIcon = loadImage('images/next.png');
+	prevIcon = loadImage('images/prev.png');
 
 	bodyFont = loadFont('fonts/CrimsonText-Roman.ttf');
 	headingFont = loadFont('fonts/Oswald-Regular.ttf');
@@ -138,7 +161,7 @@ function setup() {
 	// create html for tiled list of mothers' names
 	mothersList = $('<div id="mothers-list"></div>');
 	_.each(motherNames,function(element,index,list) {
-		mothersList.append('<a data-value="' + index + '"><h3>' + element.mothers_name + '</h3></a>');
+		mothersList.append('<a style="background-image:url(' + element.screenshot + ');" data-value="' + index + '"><h3>' + element.mothers_name + '</h3></a>');
 	});
 
 	$('.form-controls').append(mothersList);
@@ -365,6 +388,9 @@ function draw2() {
 
 	// draw close button
 	image(closeIcon, width - 50 , 20, 30, 30);
+	// draw prev and next buttons
+	image(nextIcon, width - 50 , height/2 - 15, 30, 30);
+	image(prevIcon, 20 , height/2 - 15, 30, 30);
 
 }
 
@@ -427,6 +453,38 @@ function mouseClicked() {
 		activeMother = -1;
 		resizeCanvas(0,0);
 		mothersList.slideDown();
+	} else if (mouseX > width - 50 && mouseX < width - 20 && mouseY > height/2 - 15 && mouseY < height/2 + 15) { // select next
+		imagesLoaded = false;
+		if (activeMother < motherNames.length - 1) {
+			activeMother++;
+		} else {
+			activeMother = 0;
+		}
+		motherName = motherNames[activeMother].mothers_name,
+		table = loadTable(motherNames[activeMother].csv_file, "csv", "header",function() {
+			setupData();
+			//call draw function with checking if images are loaded
+			delayDraw();
+
+		});
+		//mothersList.slideUp();
+		resizeCanvas(w,h);
+	} else if (mouseX > 20 && mouseX < 50 && mouseY > height/2 - 15 && mouseY < height/2 + 15) { // select prev
+		imagesLoaded = false;
+		if (activeMother > 0 ) {
+			activeMother--;
+		} else {
+			activeMother = motherNames.length - 1;
+		}
+		motherName = motherNames[activeMother].mothers_name,
+		table = loadTable(motherNames[activeMother].csv_file, "csv", "header",function() {
+			setupData();
+			//call draw function with checking if images are loaded
+			delayDraw();
+
+		});
+		//mothersList.slideUp();
+		resizeCanvas(w,h);
 	}
 }
 

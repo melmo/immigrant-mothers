@@ -25,13 +25,17 @@ body {
 	padding:15px;
 	margin:5px;
 	cursor:pointer;
+	background-size:cover;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ebe1cc+100,ebe1cc+100 */
-background: #ffffff; /* Old browsers */
-background: -moz-radial-gradient(center, ellipse cover,  #ffffff 0%, #ebe1cc 100%, #ebe1cc 100%); /* FF3.6-15 */
-background: -webkit-radial-gradient(center, ellipse cover,  #ffffff 0%,#ebe1cc 100%,#ebe1cc 100%); /* Chrome10-25,Safari5.1-6 */
-background: radial-gradient(ellipse at center,  #ffffff 0%,#ebe1cc 100%,#ebe1cc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ebe1cc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+border:1px solid grey;
+background-color: #ffffff; /* Old browsers */
 
+/*
+background: -moz-radial-gradient(center, ellipse cover,  #ffffff 0%, #ebe1cc 100%, #ebe1cc 100%); 
+background: -webkit-radial-gradient(center, ellipse cover,  #ffffff 0%,#ebe1cc 100%,#ebe1cc 100%); 
+background: radial-gradient(ellipse at center,  #ffffff 0%,#ebe1cc 100%,#ebe1cc 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ebe1cc',GradientType=1 ); 
+*/
 	h3 {
 		margin:15px;
 		padding:15px;
@@ -50,10 +54,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 #data-vis canvas {
 	background: #ffffff;
-	background: -moz-radial-gradient(center, ellipse cover, #ffffff 80%, #ebe1cc 100%);
+	/*background: -moz-radial-gradient(center, ellipse cover, #ffffff 80%, #ebe1cc 100%);
 	background: -webkit-radial-gradient(center, ellipse cover, #ffffff 80%,#ebe1cc 100%);
 	background: radial-gradient(ellipse at center, #ffffff 80%,#ebe1cc 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ebe1cc',GradientType=1 );
+*/
 }
 
 
