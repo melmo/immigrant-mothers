@@ -106,7 +106,10 @@ var motherNames,
 	tooltip2;
 
 function preload() {
-	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
+
+	var setID = getUrlVars()["id"];
+
+	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff&id=' + setID,function() {
 		
 	});
 
@@ -464,6 +467,46 @@ function mouseClicked() {
 	}
 }
 
+
+// navigating through the mothers with the LEFT- and RIGHT-ARROW keys
+function keyPressed() {
+	if (keyCode === LEFT_ARROW) { //select prev
+		imagesLoaded = false;
+		if (activeMother > 0 ) {
+			activeMother--;
+		} else {
+			activeMother = motherNames.length - 1;
+		}
+		motherName = motherNames[activeMother].mothers_name,
+		table = loadTable(motherNames[activeMother].csv_file, "csv", "header",function() {
+			setupData();
+			//call draw function with checking if images are loaded
+			delayDraw();
+
+		});
+		//mothersList.slideUp();
+		resizeCanvas(w,h);
+	} else if (keyCode === RIGHT_ARROW) { //select next
+		imagesLoaded = false;
+		if (activeMother < motherNames.length - 1) {
+			activeMother++;
+		} else {
+			activeMother = 0;
+		}
+		motherName = motherNames[activeMother].mothers_name,
+		table = loadTable(motherNames[activeMother].csv_file, "csv", "header",function() {
+			setupData();
+			//call draw function with checking if images are loaded
+			delayDraw();
+
+		});
+		//mothersList.slideUp();
+		resizeCanvas(w,h);
+	}
+	return false; // prevent any default behaviour
+}
+
+
 // set colours for activities
 function activityColors(activityType) {
 	if (activityType      == "presenting") return color(1, 149, 63); //green
@@ -551,4 +594,13 @@ function checkImages() {
 	});
 
 	return testImages === undefined; // true if no unloaded images found
+}
+
+
+function getUrlVars() {
+	var vars = {};
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+	vars[key] = value;
+	});
+	return vars;
 }

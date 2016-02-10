@@ -12,9 +12,6 @@ body {
 }
 
 
-
-
-
 #mothers-list {
 	text-align:center;
 }
@@ -25,6 +22,8 @@ body {
 	padding:15px;
 	margin:5px;
 	cursor:pointer;
+	width: 190px;
+	height: 148px;
 	background-size:cover;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ebe1cc+100,ebe1cc+100 */
 border:1px solid grey;
@@ -42,6 +41,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		border:2px solid #454545;
 		background:rgba(255,255,255,.75);
 		transition: all 200ms ease-in;
+		display: none;
 	}
 	&:hover {
 		text-decoration: none;
