@@ -1,43 +1,17 @@
 /*
 
-  NICE TO HAVE
+  TO DO
+
+  - make next and prev on data viz work using arrow keys
+  - remove name from data viz overview (just use css to hide it)
+
+  NICE TO HAVE - not going to happen!
 
   - allow comparison of two graphs? have a double iframe
 
-  - handle edge cases (loops, dotted lines, multiple levels)
-
-	  DOTTED ( add a field to the table )
-	  - Kinga ID 3
-	  - Marlena ID 1
-	  - Ania ID 4
-
-	  LOOPS ( ?? spend a couple of hours on it, see what happens )
-	  - Ania ID 1
-	  - Kinga ID 3 (maybe others)
-	  - Kaja ID 3
-
-	  MULTIPLE LEVELS ( I think this will just be too hard )
+  - MULTIPLE LEVELS ( I think this will just be too hard )
 	  - Paulina ID 2
 	  - Monika
-
-
-  Requests from Agata:
-
-
-Is there any way the visualisations could appear on a carousel, just as
-the drawings?  It really would be much more
-user friendly if we could skip from one viz to another without having to
-go back to the main page. 
-
-Also, if we could have the corners of the viz
-transparent, without the shading, it would look better, we think. 
-
-And, in
-a perfect world, if instead of boxes with names we could have pictures of
-visualisations (which we could provide by creating screen shots, I think,
-once all the visualisations are in order -- see, e.g., above re changes in
-the Agnieszka file)
-
 
 
 */
@@ -133,9 +107,11 @@ var motherNames,
 
 function preload() {
 	motherNames = loadJSON('http://migrantmothers.staging.wpengine.com/wp-admin/admin-ajax.php?action=stuff',function() {
-		activeMother = -1;
-		tSize = 32;
+		
 	});
+
+	activeMother = -1;
+	tSize = 32;
 
 	// Check available width, minimum 600
 	w = $('#data-vis').width() > 600 ? $('#data-vis').width() : 600;
